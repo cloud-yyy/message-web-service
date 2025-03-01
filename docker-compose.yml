@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  server:
+    image: messages-web-server
+    build:
+      context: .
+      dockerfile: server/MessageWebService/Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:alpine
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 3
+
+  client:
+    image: messages-web-client
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    ports:
+      - 8081:80
+    depends_on:
+      server:
+        condition: service_started
+
+volumes:
+  db-data:
+
