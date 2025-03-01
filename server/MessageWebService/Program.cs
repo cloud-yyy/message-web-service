@@ -23,7 +23,20 @@ builder.Services
     .AddControllers()
     .AddApplicationPart(typeof(MessageController).Assembly);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowAnyOrigin();
+    });
+});
+
+builder.Services.AddSignalR();
+
 builder.Services.AddSingleton<IMessageRepository, MessageRepository>();
+builder.Services.AddSingleton<IMessageSender, MesageSender>();
 builder.Services.AddScoped<MessageService>();
 
 var app = builder.Build();
@@ -34,6 +47,8 @@ using (var scope = serviceProvider.CreateScope())
     var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
     runner.MigrateUp();
 }
+
+app.UseCors();
 
 app.MapControllers();
 

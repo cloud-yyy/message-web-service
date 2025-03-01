@@ -20,14 +20,13 @@ public class MessageController(
 
     [HttpGet]
     public async Task<IActionResult> GetMessages(
-        [FromQuery] DateTime? start,
-        [FromQuery] DateTime? end,
+        [FromQuery] DateTime start,
+        [FromQuery] DateTime end,
         CancellationToken cancellationToken)
     {
-        var messages = await _messageService.GetMessagesAsync(
-            start ?? DateTime.UtcNow.AddMinutes(-10),
-            end ?? DateTime.UtcNow, cancellationToken);
-        
+        var messages = await _messageService
+            .GetMessagesAsync(start, end, cancellationToken);
+
         return Ok(messages);
     }
 }

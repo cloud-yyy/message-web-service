@@ -1,12 +1,16 @@
 using MessageWebService.Domain.Abstractions;
 using MessageWebService.Domain.Models;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 
 namespace MessageWebService.DataAccess.Repositories;
 
 public class MessageRepository(
-    string _connectionString) : IMessageRepository
+    IConfiguration configuration) : IMessageRepository
 {
+    private readonly string _connectionString
+        = configuration.GetConnectionString("DefaultConnection")!;
+
     public async Task SaveMessageAsync(
         Message message, CancellationToken cancellationToken = default)
     {
