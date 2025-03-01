@@ -28,7 +28,7 @@ public class MessageRepository(
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
-    public async Task<List<Message>> GetMessagesAsync(
+    public async Task<IEnumerable<Message>> GetMessagesAsync(
         DateTime start, DateTime end, CancellationToken cancellationToken = default)
     {
         var messages = new List<Message>();

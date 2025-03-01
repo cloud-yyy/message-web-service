@@ -10,4 +10,8 @@
     <ProjectReference Include="../MessageWebService.Domain/MessageWebService.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
+  </ItemGroup>
+
 </Project>

@@ -1,18 +1,30 @@
 using FluentMigrator.Runner;
+using MessageWebService.Application;
+using MessageWebService.Application.Services;
 using MessageWebService.DataAccess.Migrations;
 using MessageWebService.DataAccess.Repositories;
 using MessageWebService.Domain.Abstractions;
+using MessageWebService.Infrastructure.SignalR;
+using MessageWebService.Presentation.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAutoMapper(config =>
+    config.AddMaps(typeof(MappingProfile).Assembly));
+
 builder.Services.AddFluentMigratorCore()
-    .ConfigureRunner(rb => rb
+    .ConfigureRunner(runnerBuilder => runnerBuilder
         .AddPostgres()
         .WithGlobalConnectionString(builder.Configuration.GetConnectionString("DefaultConnection"))
         .ScanIn(typeof(InitialMigration).Assembly).For.Migrations())
-    .AddLogging(lb => lb.AddFluentMigratorConsole());
+    .AddLogging(loggingBuilder => loggingBuilder.AddFluentMigratorConsole());
+
+builder.Services
+    .AddControllers()
+    .AddApplicationPart(typeof(MessageController).Assembly);
 
 builder.Services.AddSingleton<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<MessageService>();
 
 var app = builder.Build();
 
@@ -23,6 +35,8 @@ using (var scope = serviceProvider.CreateScope())
     runner.MigrateUp();
 }
 
-app.MapGet("/", () => "Hello World!");
+app.MapControllers();
+
+app.MapHub<MessageHub>("/message-hub");
 
 app.Run();

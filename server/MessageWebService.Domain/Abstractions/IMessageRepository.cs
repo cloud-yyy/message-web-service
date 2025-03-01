@@ -6,6 +6,6 @@ public interface IMessageRepository
 {
     Task SaveMessageAsync(
         Message message, CancellationToken cancellationToken = default);
-    Task<List<Message>> GetMessagesAsync(
+    Task<IEnumerable<Message>> GetMessagesAsync(
         DateTime start, DateTime end, CancellationToken cancellationToken = default);
 }
