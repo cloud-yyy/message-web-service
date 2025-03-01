@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message History</title>
+</head>
+<body>
+    <h1>Message History (Last 10 Minutes)</h1>
+    <button onclick="getHistory()">Get History</button>
+    <ul id="historyList"></ul>
+    <script>
+        async function getHistory() {
+            const end = new Date();
+            const start = new Date(end.getTime() - 10 * 60 * 1000);
+            const startIso = start.toISOString();
+            const endIso = end.toISOString();
+            const response = await fetch(`http://localhost:8080/api/messages?start=${startIso}&end=${endIso}`);
+            const messages = await response.json();
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
+            messages.forEach(message => {
+                const li = document.createElement('li');
+                li.textContent = `${message.timestamp}: ${message.text} (№${message.sequenceNumber})`;
+                list.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
