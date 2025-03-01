@@ -29,7 +29,8 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
-        policy.AllowAnyOrigin();
+        policy.AllowCredentials();
+        policy.WithOrigins("http://localhost:8081"); 
     });
 });
 
@@ -37,7 +38,7 @@ builder.Services.AddSignalR();
 
 builder.Services.AddSingleton<IMessageRepository, MessageRepository>();
 builder.Services.AddSingleton<IMessageSender, MesageSender>();
-builder.Services.AddScoped<MessageService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 var app = builder.Build();
 

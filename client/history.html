@@ -13,8 +13,8 @@
         async function getHistory() {
             const end = new Date();
             const start = new Date(end.getTime() - 10 * 60 * 1000);
-            const startIso = start.toISOString().slice(0, 16);
-            const endIso = end.toISOString().slice(0, 16);
+            const startIso = start.toISOString();
+            const endIso = end.toISOString();
             const response = await fetch(`http://localhost:8080/api/messages?start=${startIso}&end=${endIso}`);
             const messages = await response.json();
             const list = document.getElementById('historyList');

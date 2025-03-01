@@ -1,15 +1,19 @@
 using MessageWebService.Domain.Abstractions;
 using MessageWebService.Domain.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace MessageWebService.DataAccess.Repositories;
 
 public class MessageRepository(
-    IConfiguration configuration) : IMessageRepository
+    IConfiguration configuration,
+    ILogger<MessageRepository> logger) : IMessageRepository
 {
     private readonly string _connectionString
         = configuration.GetConnectionString("DefaultConnection")!;
+
+    private readonly ILogger<MessageRepository> logger = logger;
 
     public async Task SaveMessageAsync(
         Message message, CancellationToken cancellationToken = default)
@@ -29,7 +33,21 @@ public class MessageRepository(
         command.Parameters.AddWithValue("timestamp", message.Timestamp);
         command.Parameters.AddWithValue("sequenceNumber", message.SequenceNumber);
 
-        await command.ExecuteNonQueryAsync(cancellationToken);
+        try
+        {
+            await command.ExecuteNonQueryAsync(cancellationToken);
+
+            logger.LogInformation(
+                "Message {sequenceNumber} saved with text '{text}' at {timestamp}",
+                message.SequenceNumber, message.Text, message.Timestamp);
+        }
+        catch (NpgsqlException ex)
+        {
+            logger.LogError(ex,
+                "Error saving message {sequenceNumber} with text '{text}' at {timestamp}",
+                message.SequenceNumber, message.Text, message.Timestamp);
+            throw;
+        }
     }
 
     public async Task<IEnumerable<Message>> GetMessagesAsync(
@@ -52,18 +70,33 @@ public class MessageRepository(
         command.Parameters.AddWithValue("start", start);
         command.Parameters.AddWithValue("end", end);
 
-        using var reader = await command.ExecuteReaderAsync(cancellationToken);
-
-        while (await reader.ReadAsync(cancellationToken))
+        try
         {
-            messages.Add(new Message
-            {
-                Text = reader.GetString(0),
-                Timestamp = reader.GetDateTime(1),
-                SequenceNumber = reader.GetInt32(2)
-            });
-        }
+            using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
-        return messages;
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                messages.Add(new Message
+                {
+                    Text = reader.GetString(0),
+                    Timestamp = reader.GetDateTime(1),
+                    SequenceNumber = reader.GetInt32(2)
+                });
+            }
+
+            logger.LogInformation(
+                "Retrieved {count} messages from {start} to {end}",
+                messages.Count, start, end);
+
+            return messages;
+        }
+        catch (NpgsqlException ex)
+        {
+            logger.LogError(ex,
+                "Error getting messages from {start} to {end}",
+                start, end);
+            throw;
+        }
     }
 }
+
