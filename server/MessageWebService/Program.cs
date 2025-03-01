@@ -6,6 +6,7 @@ using MessageWebService.DataAccess.Repositories;
 using MessageWebService.Domain.Abstractions;
 using MessageWebService.Infrastructure.SignalR;
 using MessageWebService.Presentation.Controllers;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,11 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSignalR();
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Message API", Version = "v1" });
+});
+
 builder.Services.AddSingleton<IMessageRepository, MessageRepository>();
 builder.Services.AddSingleton<IMessageSender, MesageSender>();
 builder.Services.AddScoped<IMessageService, MessageService>();
@@ -50,6 +56,9 @@ using (var scope = serviceProvider.CreateScope())
 }
 
 app.UseCors();
+
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Message API V1"));
 
 app.MapControllers();
 
