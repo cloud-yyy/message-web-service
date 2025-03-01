@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../MessageWebService.DataAccess/MessageWebService.DataAccess.csproj" />
     <ProjectReference Include="../MessageWebService.Infrastructure/MessageWebService.Infrastructure.csproj" />
     <ProjectReference Include="../MessageWebService.Presentation/MessageWebService.Presentation.csproj" />
   </ItemGroup>

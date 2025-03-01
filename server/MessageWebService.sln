@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageWebService.Presentat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageWebService.Infrastructure", "MessageWebService.Infrastructure\MessageWebService.Infrastructure.csproj", "{512356C1-83CB-43DB-8ED3-B7E3ACD46B25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageWebService.DataAccess", "MessageWebService.DataAccess\MessageWebService.DataAccess.csproj", "{C4EE9FF4-145B-414F-AF69-0FC5FE1EAA53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{512356C1-83CB-43DB-8ED3-B7E3ACD46B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{512356C1-83CB-43DB-8ED3-B7E3ACD46B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{512356C1-83CB-43DB-8ED3-B7E3ACD46B25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4EE9FF4-145B-414F-AF69-0FC5FE1EAA53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4EE9FF4-145B-414F-AF69-0FC5FE1EAA53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4EE9FF4-145B-414F-AF69-0FC5FE1EAA53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4EE9FF4-145B-414F-AF69-0FC5FE1EAA53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
